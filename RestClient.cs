@@ -1,4 +1,5 @@
-﻿using Refit;
+﻿using System.Net;
+using Refit;
 
 namespace TCDDAlertBot;
 
@@ -14,7 +15,20 @@ internal interface ITcddApi
 internal class RestClient
 {
     private static Lazy<ITcddApi> _client =>
-        new(() => RestService.For<ITcddApi>("https://ebilet.tcddtasimacilik.gov.tr"),
+        new(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    UseProxy = true,
+                    Proxy = new WebProxy("torproxy",8118)
+                };
+                var client = new HttpClient(handler)
+                {
+                    BaseAddress = new Uri("https://ebilet.tcddtasimacilik.gov.tr")
+                };
+
+                return RestService.For<ITcddApi>(client);
+            },
             LazyThreadSafetyMode.None);
 
     internal static ITcddApi Client => _client.Value;
