@@ -116,7 +116,18 @@ public static class Program
             StationName = departureStation
         };
 
-        var res = await RestClient.Client.IstasyonTrenSorgula(req, _authorizationHeaderValue);
+        IstasyonTrenSorgulaResponse res;
+
+        try
+
+        {
+            res = await RestClient.Client.IstasyonTrenSorgula(req, _authorizationHeaderValue);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Enumerable.Empty<string>();
+        }
 
         if (res.CevapBilgileri.CevapKodu == "000")
         {
