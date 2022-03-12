@@ -84,6 +84,7 @@ public static class Program
 
                 foreach (var chatId in value.Distinct())
                 {
+                    Console.WriteLine($"Sending alert '{key.DepartureStation} -> {key.ArrivalStation}' to {chatId}");
                     await b.SendTextMessageAsync(chatId,
                         $"[{string.Join(", ", trainList)}]: {key.DepartureStation} -> {key.ArrivalStation} on {key.Date} is now available.");
                 }
@@ -153,6 +154,14 @@ public static class Program
                 case "?":
                     await botClient.SendTextMessageAsync(update.Message!.Chat.Id,
                         $"? l | cl | rm | time | c ddMMyyyy departureStation:arrivalStation",
+                        cancellationToken: cancellationToken);
+                    break;
+                case "d":
+                    var x = await GetTrainNamesOnDate(
+                        DateOnly.FromDateTime(DateTime.Today.AddDays(1)),
+                        "Ankara Gar",
+                        "Kars");
+                    await botClient.SendTextMessageAsync(update.Message!.Chat.Id, $"{string.Join(",", x)}",
                         cancellationToken: cancellationToken);
                     break;
                 case "l":
