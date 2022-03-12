@@ -11,6 +11,8 @@ namespace TCDDAlertBot;
 
 public static class Program
 {
+    private const int RETRY_PERIOD = 30;
+
     private const string TELEGRAM_TOKEN_ENV_VAR = "TELEGRAM_TOKEN";
     private const string TCDD_HEADER_ENV_VAR = "TCDD_AUTH_HEADER_VALUE";
     private const string STATE_FILE_ENV_VAR = "STATE_FILE";
@@ -93,7 +95,8 @@ public static class Program
             {
                 _dictAlertRequestChatId.Remove(r);
             }
-        }, bot, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            
+        }, bot, TimeSpan.Zero, TimeSpan.FromSeconds(RETRY_PERIOD));
 
 
         bot.StartReceiving(new DefaultUpdateHandler(HandleUpdateAsync, HandleErrorAsync));
